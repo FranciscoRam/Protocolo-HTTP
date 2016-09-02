@@ -7,8 +7,7 @@
 #### La WEB
 Internet (o la WEB) es un masivo distribuidor de sistema de información cliente/servicio  como se muestra en el siguiente diagrama.
 
-![alt text][logo]
-[logo]:https://github.com/FranciscoRam/Protocolo-HTTP/blob/master/imagenes/01.png?raw=true
+![](https://github.com/FranciscoRam/Protocolo-HTTP/blob/master/imagenes/01.png?raw=true)
 
 
 Muchas aplicaciones se están ejecutando al mismo tiempo a través de Internet, tales como la navegación web/surfing, e-mail, transferencia de archivos, streaming de audio y video, y así sucesivamente. Para que una comunicación adecuada tenga lugar entre el cliente y el servidor, estas aplicaciones deben estar de acuerdo con un protocolo específico de nivel de aplicación como HTTP, FTP, SMTP, POP, etc.
