@@ -15,16 +15,14 @@ Muchas aplicaciones se están ejecutando al mismo tiempo a través de Internet, 
 #### Protocolo de Transferencia de Hipertexto (HTTP)
 HTTP (Protocolo de Transferencia de Hipertexto) es quizás el protocolo de aplicación más popular en Internet (o en la web).
 * HTTP es un protocolo cliente-servidor de petición-respuesta asimétrica como se ilustra. Un cliente HTTP envía un mensaje de petición a un servidor HTTP. El servidor, a su vez, devuelve un mensaje de respuesta. En otras palabras, HTTP es un protocolo de extracción, el cliente extrae la información desde el servidor (en lugar del servidor empujar información hasta el cliente).
-![alt text][logo]
-[logo]: https://www.ntu.edu.sg/home/ehchua/programming/webprogramming/images/HTTP.png
+![](https://www.ntu.edu.sg/home/ehchua/programming/webprogramming/images/HTTP.png)
 * HTTP es un protocolo sin estado. En otras palabras, la solicitud actual no sabe lo que se ha hecho en las anteriores solicitudes.
 * HTTP permite la negociación de tipo de datos y representación, a fin de permitir que los sistemas se construyan de forma independiente de los datos que se transfieren.
 * Citando el RFC2616: "El Protocolo de transferencia de hipertexto (HTTP) es un protocolo de nivel de aplicación para distribucion, colaboración, sistemas de información hipermedia. Es un genérico sin estado, el protocolo que se puede utilizar para muchas tareas más allá de su uso para el hipertexto, por ejemplo. como servidores de nombres y sistemas de gestión de objetos distribuidos, a través de la extensión de sus métodos de petición, códigos de error y los encabezados".
  #### Navegador
 Cada vez que se emite una dirección URL de su navegador para obtener un recurso web a través de HTTP, por ejemplo, http://www.nowhere123.com/index.html, el navegador vuelve la dirección URL en un mensaje de solicitud y la envía al servidor HTTP. El servidor HTTP interpreta el mensaje de petición, y le devuelve un mensaje de respuesta apropiada, que puede ser el recurso que ha solicitado o un mensaje de error. Este proceso se ilustra a continuación:
 
-![alt text][logo]
-[logo]: https://www.ntu.edu.sg/home/ehchua/programming/webprogramming/images/HTTP_Steps.png
+![](https://www.ntu.edu.sg/home/ehchua/programming/webprogramming/images/HTTP_Steps.png)
 
 #### Localizador Uniforme de Recursos (URL)
 Un URL (Uniform Resource Locator) se utiliza para identificar de forma exclusiva un recurso a través de Internet. URL tiene la siguiente sintaxis:
@@ -84,8 +82,7 @@ En su estado de reposo, un servidor HTTP no hace más que escuchar a la direcci�
 #### HTTP a través de TCP / IP
 HTTP es un protocolo de nivel de aplicación cliente-servidor. Por lo general se ejecuta sobre una conexión TCP/IP, como se ilustra. (HTTP necesariamente no se ejecuta en TCP/IP. Sólo se presupone un transporte fiable. Cualquier protocolo de transporte que ofrecen tales garantías pueden ser utilizados.)
 
-![alt text][logo]
-[logo]: https://www.ntu.edu.sg/home/ehchua/programming/webprogramming/images/HTTP_OverTCPIP.png
+![](https://www.ntu.edu.sg/home/ehchua/programming/webprogramming/images/HTTP_OverTCPIP.png)
 
 TCP/IP (Protocolo de Control de Transmición/Protocolo de Internet) es un conjunto de protocolos de transporte y capas de red para que máquinas se comuniquen entre sí a través de la red. IP (Protocolo de internet) es un protocolo de capa de red, se ocupa de direccionamiento de red y enrutamiento. En una red IP, cada máquina se asigna una dirección IP única (por ejemplo, 165.1.2.3), y el software de IP es responsable de encaminar un mensaje desde la fuente de IP a la dirección IP de destino. En IPv4 (versión 4 de IP ), la dirección IP se compone de 4 bytes, cada uno de los rangos de 0 a 255, separados por puntos, que se llama una forma de cuatro puntos. Este esquema de numeración soporta hasta 4G electrónico de la red. La última IPv6 (IP versión 6) soporta más direcciones. Como memorizar el número es difícil para la mayoría de las personas, un nombre de dominio-Inglés como www.nowhere123.com se utiliza en su lugar. El DNS (Servicio de nombre de dominio) traduce el nombre de dominio a la dirección IP (a través de tablas de búsqueda distribuidas). Una dirección IP 127.0.0.1 especial siempre se refiere a su propia máquina. Su nombre de dominio es "localhost" y puede ser utilizado para la prueba de bucle local.
 
@@ -107,13 +104,12 @@ El primer servidor HTTP fue escrito por Tim Berners-Lee en el CERN (Centro Europ
 Un cliente HTTP y el servidor se comunican mediante el envío de mensajes de texto. El cliente envía un mensaje de petición al servidor. El servidor, a su vez, devuelve un mensaje de respuesta.
 Un mensaje HTTP consta de una cabecera de mensaje y un cuerpo de mensaje opcional, separados por una línea en blanco, como se ilustra a continuación:
 
-![alt text][logo]
-[logo]:https://www.ntu.edu.sg/home/ehchua/programming/webprogramming/images/HTTP_MessageFormat.png
+![](https://www.ntu.edu.sg/home/ehchua/programming/webprogramming/images/HTTP_MessageFormat.png)
 
 #### Petición de mensaje HTTP
 El formato de un mensaje de petición HTTP es como sigue:
-![alt text][logo]
-[logo]:https://www.ntu.edu.sg/home/ehchua/programming/webprogramming/images/HTTP_RequestMessage.png
+![](https://www.ntu.edu.sg/home/ehchua/programming/webprogramming/images/HTTP_RequestMessage.png)
+
 **Linea de Estado**
 La primera línea de la cabecera se llama la línea de solicitud , seguido de las cabeceras de solicitud opcionales.
 La línea de solicitud tiene la siguiente sintaxis: 
@@ -144,13 +140,11 @@ Accept-Language: us-en, fr, cn
 ```
 **Ejemplo**
 A continuación se muestra un mensaje de petición HTTP de ejemplo:
-![alt text][logo]
-[logo]:https://www.ntu.edu.sg/home/ehchua/programming/webprogramming/images/HTTP_RequestMessageExample.png
+![](https://www.ntu.edu.sg/home/ehchua/programming/webprogramming/images/HTTP_RequestMessageExample.png)
 
 #### Mensaje de respuesta HTTP
 El formato del mensaje de respuesta HTTP es como sigue:
-![alt text][logo]
-[logo]:https://www.ntu.edu.sg/home/ehchua/programming/webprogramming/images/HTTP_ResponseMessage.png
+![](https://www.ntu.edu.sg/home/ehchua/programming/webprogramming/images/HTTP_ResponseMessage.png)
 **Linea de status**
 La primera línea se llama la línea de estado, seguido de la cabecera de respuesta opcional(s).
 La línea de estado tiene la siguiente sintaxis:
@@ -183,5 +177,4 @@ El cuerpo del mensaje de respuesta contiene los datos de los recursos solicitado
 **Ejemplo**
 
 A continuación se muestra un mensaje de respuesta:
-![alt text][logo]
-[logo]:https://www.ntu.edu.sg/home/ehchua/programming/webprogramming/images/HTTP_ResponseMessageExample.png
+![](https://www.ntu.edu.sg/home/ehchua/programming/webprogramming/images/HTTP_ResponseMessageExample.png)
