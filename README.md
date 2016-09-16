@@ -359,7 +359,7 @@ Content-Type: text/html; charset=iso-8859-1
 </p>
 </body></html>
 ```
-****Ejemplo: 404 Archivo no Encontrado**
+**Ejemplo: 404 Archivo no Encontrado**
 
 En esta solicitud GET, la solicitud de URL "/t.html" no se puede encontrar en el directorio de documentos del servidor. El servidor devuelve un error "404 Not Found".
 ``` sh
@@ -496,6 +496,7 @@ on this server.</p>
 El Servidor HTTP / 1.1 es compatible con las llamadas máquinas virtuales. Es decir, el mismo servidor físico podría albergar varios hosts virtuales, con diferentes nombres de host (por ejemplo, www.nowhere123.com y www.test909.com) y sus propios directorios raíz de documentos dedicados. Por lo tanto, en una petición HTTP / 1.1 GET, es obligatorio incluir un encabezado de solicitud llamado "host", para seleccionar uno de los hosts virtuales.
 
 **Ejemplo: Solicitud HTTP/1.1**
+
 HTTP / 1.1 mantiene persistente (o keep-alive) de conexión por defecto para mejorar la eficiencia de la red. Puede utilizar una "Connection: Close" encabezado de solicitud para pedir el servidor para cerrar la conexión TCP una vez que se entrega la respuesta.
 ``` sh
 GET /index.html HTTP/1.1
