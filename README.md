@@ -754,3 +754,525 @@ X-Forwarded-For: 155.69.185.59, 155.69.5.234
 0
 ```
 (Para comparar la petición TRACE con una ruta de indicio)
+
+#### Presentando formularios de datos HTML y cadenas de consulta
+
+En muchas aplicaciones de Internet, tales como e-commerce y motores de búsqueda, se requieren los clientes para presentar información adicional al servidor (por ejemplo, el nombre, la dirección, las palabras clave de búsqueda). En base de los datos presentados, el servidor toma una acción apropiada y produce una respuesta personalizada.
+
+Los clientes suelen presentarse con una forma (producido utilizando la etiqueta HTML <form>). Una vez que se llenan los datos solicitados y pulsa el botón de enviar, el navegador empaca los datos del formulario y las presenta al servidor, usando una petición GET o una solicitud POST.
+La siguiente es una muestra en forma HTML, que se produce por la siguiente secuencia de comandos HTML:
+``` sh
+<html>
+<head><title>A Sample HTML Form</title></head>
+<body>
+  <h2 align="left">A Sample HTML Data Entry Form</h2>
+  <form method="get" action="/bin/process">
+    Enter your name: <input type="text" name="username"><br />
+    Enter your password: <input type="password" name="password"><br />
+    Which year?
+    <input type="radio" name="year" value="2" />Yr 1
+    <input type="radio" name="year" value="2" />Yr 2
+    <input type="radio" name="year" value="3" />Yr 3<br />
+    Subject registered:
+    <input type="checkbox" name="subject" value="e101" />E101
+    <input type="checkbox" name="subject" value="e102" />E102
+    <input type="checkbox" name="subject" value="e103" />E103<br />
+    Select Day:
+    <select name="day">
+      <option value="mon">Monday</option>
+      <option value="wed">Wednesday</option>
+      <option value="fri">Friday</option>
+    </select><br />
+    <textarea rows="3" cols="30">Enter your special request here</textarea><br />
+    <input type="submit" value="SEND" />
+    <input type="reset" value="CLEAR" />
+    <input type="hidden" name="action" value="registration" />
+  </form>
+</body>
+</html>
+```
+![](https://www.ntu.edu.sg/home/ehchua/programming/webprogramming/images/HTML_SampleForm.png)
+
+Una forma contiene campos. Los tipos de campos incluyen:
+* Text Box: producido por <input type="text">.
+* Password Box: producido por <input type="password">.
+* Radio Button: producido por <input type="radio">.
+* Checkbox: producido por <input type="checkbox">.
+* Selection: producido por <select> and <option>.
+* Text Area: producido por <textarea>.
+* Submit Button: producido por <input type="submit">.
+* Reset Button: producido por <input type="reset">.
+* Hidden Field: producido por <input type="hidden">.
+* Button: producido por <input type="button">.
+
+Cada campo tiene un nombre y puede tomar un valor especifico. Una vez que el cliente rellena los campos y pulsa el botón de enviar, el navegador recoge cada nombre y valor de los campos, los empaca en pares tipo "nombre = valor", y concatena todos los campos utilizando "&" como separador de campo. Esto se conoce como una cadena de consulta. La cadena de consulta se enviará al servidor como parte de la solicitud.
+``` sh
+name1=value1&name2=value2&name3=value3&... 
+```
+Los caracteres especiales no están permitidos dentro de la cadena de consulta. Ellos deben ser reemplazados por un "%" seguido del código ASCII en hexadecimal. Por ejemplo, "~" se sustituye por "%7E", "#" por "%23" y así sucesivamente. Un espacio en blanco es bastante común, puede ser sustituido por uno o "%20" "+" (el carácter "+" debe sustituirse por "%2B"). Este proceso de sustitución se llama codificación URL, y el resultado es una cadena de consulta con codificación URL. Por ejemplo, supongamos que hay 3 campos dentro de un formulario, con el nombre de "name = Peter Lee", "address = #123 Ave feliz" y "language = C++", la cadena de consulta con codificación URL es:
+``` sh
+name=Peter+Lee&address=%23123+Happy+Ave&Language=C%2B%2B
+```
+La cadena de consulta se puede enviar al servidor por medio del método de solicitud HTTP GET o POST, que se especifica en la etiqueta <form>'s atributo "método".
+``` sh
+<form method="get|post" action="url">
+```
+Si el método de solicitud GET es usado, la codificación URL de la cadena de consulta aparecerá detras de la request-URL despues de un caracter "?"
+``` sh
+GET request-URI?query-string HTTP-version
+(other optional request headers)
+(blank line)
+(optional request body)
+```
+Usar la solicitud GET para enviar cadenas de consulta tiene los siguientes inconvenientes:
+* La cantidad de datos que se puede agregar detrás de petición-URI es limitado. Si esta cantidad excede un umbral específico del servidor, el servidor devolverá un error "414 URI de la solicitud demasiado grande".
+* La cadena de consulta con codificación URL aparecería en el cuadro de dirección del navegador.
+
+El método POST elimina estos inconvenientes. Si se utiliza el método de solicitud POST, la cadena de consulta se enviará en el cuerpo del mensaje de solicitud, donde la cantidad no está limitada. Las cabezeras de la solicitud Content-Type y Content-Length se utilizan para notificar al servidor el tipo y la longitud de la cadena de consulta. La cadena de consulta no aparecerá en el cuadro de dirección del navegador. El método POST se discutirá más adelante.
+
+**Ejemplo**
+
+La siguiente forma HTML es usada para reunir el usuario y contraseña de un menu login.
+``` sh
+<html>
+<head><title>Login</title></head>
+<body>
+  <h2>LOGIN</h2>
+  <form method="get" action="/bin/login">
+    Username: <input type="text" name="user" size="25" /><br />
+    Password: <input type="password" name="pw" size="10" /><br /><br />
+    <input type="hidden" name="action" value="login" />
+    <input type="submit" value="SEND" />
+  </form>
+</body>
+</html>
+``` 
+![](https://www.ntu.edu.sg/home/ehchua/programming/webprogramming/images/HTML_LoginForm.png)
+
+El método de la petición HTTP GET se utiliza para enviar la cadena de consulta. Supongamos que el usuario introduce "Peter Lee" como nombre de usuario, "123456" como contraseña; y pulse el botón Enviar. La siguiente petición GET es:
+``` sh
+GET /bin/login?user=Peter+Lee&pw=123456&action=login HTTP/1.1
+Accept: image/gif, image/jpeg, */*
+Referer: http://127.0.0.1:8000/login.html
+Accept-Language: en-us
+Accept-Encoding: gzip, deflate
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)
+Host: 127.0.0.1:8000
+Connection: Keep-Alive
+``` 
+
+Tenga en cuenta que aunque la contraseña que introduzca no se muestra en la pantalla, se muestra claramente en el cuadro de dirección del navegador. Nunca se debe enviar la contraseña sin cifrado adecuado.
+``` sh
+http://127.0.0.1:8000/bin/login?user=Peter+Lee&pw=123456&action=login
+```
+
+### URL and URI
+
+**URL (Localizador de Recursos Uniformes)**
+
+Una URL que se define en el RFC 2396, se utiliza para identificar de forma exclusiva un recurso a través de Internet. Una URL tiene la siguiente sintaxis:
+``` sh
+protocol://hostname:port/path-and-file-name
+```
+Hay 4 partes en una dirección URL:
+* Protocol: El protocolo de capa de aplicación utilizado por el cliente y el servidor, por ejemplo, HTTP, FTP y telnet.
+* hostname: El nombre de dominio DNS (por ejemplo, www.nowhere123.com) o la dirección IP (por ejemplo, 192.128.1.2) del servidor.
+* Puerto: el número de puerto TCP que el servidor está a la escucha de peticiones entrantes de los clientes.
+* Path-and-file-name: El nombre y la ubicación del recurso solicitado, bajo el directorio base de documentos del servidor.
+
+Por ejemplo, en la http://www.nowhere123.com/docs/index.html URL, el protocolo de comunicación es HTTP; el nombre de host es www.nowhere123.com. El número de puerto no se ha especificado en la URL, y adquiere el número predeterminado, que es el puerto TCP 80 para HTTP [STD 2]. La ruta y el nombre del archivo para el recurso que se encuentra es "/docs/index.html". bajo el directorio base de documentos del servidor.
+
+Otros ejemplos de URL son:
+``` sh
+ftp://www.ftp.org/docs/test.txt
+mailto:user@test101.com
+news:soc.culture.Singapore
+telnet://www.nowhere123.com/
+```
+
+**Codificación de URL**
+
+URL no puede contener caracteres especiales, como blanco o '~'. Los caracteres especiales se codifican, en forma de% xx, donde xx es el código ASCII hexadecimal. Por ejemplo, '~' se codifica como% 7e; '+' Se codifica como% 2b. Un espacio en blanco puede ser codificado como% 20 o '+'. La dirección URL después de la codificación se llama URL codificada.
+
+**URI (Identificador Uniforme de Recursos)**
+
+URI (Uniform Resource Identifier), que se define en el RFC 3986, es más general que el URL, que puede incluso localizar un fragmento dentro de un recurso. La sintaxis URI para el protocolo HTTP es:
+``` sh
+http://host:port/path?request-parameters#nameAnchor
+```
+* Los parámetros de la petición, en forma de pares nombre = valor, se separan de la URL por un '?'. Los pares nombre = valor están separados por un '&'.
+* El #nameAnchor identifica un fragmento dentro del documento HTML, que se define a través de la etiqueta de ancla ... .
+* URL rescribe para la gestión de la sesión, por ejemplo, "...; Id.sesión = xxxxxx".
+
+### Método de Solicitud "POST"
+
+El método de solicitud POST se utiliza para añadir datos adicionales "post" hasta el servidor (por ejemplo, la presentación de los datos del formulario HTML o cargando un archivo). La emisión de un URL HTTP desde el navegador siempre activa una solicitud GET. Para desencadenar una solicitud POST, puede utilizar un formulario HTML con el método de atributo = "post" o escribir su propio programa de la red. Para la presentación de los formularios HTML, La solicitud POST es la misma que la solicitud GET, excepto que la cadena de consulta con codificación URL se envía en el cuerpo de la solicitud, en lugar de adjuntó detrás de la solicitud URI.
+
+La solicitud POST toma la siguiente sintaxis:
+``` sh
+POST request-URI HTTP-version
+Content-Type: mime-type
+Content-Length: number-of-bytes
+(other optional request headers)
+
+(URL-encoded query string)
+```
+
+Las Cabeceras de petición Content-Type y Content-Length son necesaria en la solicitud POST para informar al servidor el tipo y la longitud del cuerpo de la petición.
+
+**Ejemplo: Presentando Formularios de datos usando métodos de petición POST**
+
+Usamos el mismo script HTML que antes, pero cambiamos el método de solicitud a POST.
+``` sh
+<html>
+<head><title>Login</title></head>
+<body>
+  <h2>LOGIN</h2>
+  <form method="post" action="/bin/login">
+    Username: <input type="text" name="user" size="25" /><br />
+    Password: <input type="password" name="pw" size="10" /><br /><br />
+    <input type="hidden" name="action" value="login" />
+    <input type="submit" value="SEND" />
+  </form>
+</body>
+</html>
+```
+Suponiendo que el usuario ingresa "Peter lee" como username y "123456" como contraseña, y despues hace click sobre el boton enviar, la siguiente solicitud post sera generada por el navegador:
+``` sh
+POST /bin/login HTTP/1.1
+Host: 127.0.0.1:8000
+Accept: image/gif, image/jpeg, */*
+Referer: http://127.0.0.1:8000/login.html
+Accept-Language: en-us
+Content-Type: application/x-www-form-urlencoded
+Accept-Encoding: gzip, deflate
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)
+Content-Length: 37
+Connection: Keep-Alive
+Cache-Control: no-cache
+
+User=Peter+Lee&pw=123456&action=login
+```
+Tenga en cuenta que la cabecera Content-Type informa al servidor que los datos se codifican en URL (con un tipo MIME especial application/x-www-form-urlencoded), y la cabecera Content-Length indica al servidor el número de bytes que se lee en el cuerpo del mensaje.
+
+**POST vs GET Para presentacion de formas de datos**
+
+Como se mencionó en la sección anterior, La solicitud POST tiene las siguientes ventajas en comparación con la solicitud GET en el envío de la cadena de consulta:
+
+* La cantidad de datos que pueden ser publicado es ilimitada, y se mantienen en el cuerpo de la petición, que generalmente se envía al servidor en un flujo de datos independiente.
+* La cadena de consulta no se muestra en el cuadro de dirección del navegador.
+
+Tenga en cuenta que aunque la contraseña no se muestra en el cuadro de dirección del navegador, se transmite al servidor en texto claro, y se somete a la red sniffing. Por lo tanto, el envío de la contraseña mediante una solicitud POST no es absolutamente seguro.
+
+### Carga de Archivos utilizando multipartes/Petición POST form-data
+
+"RFC 1867: Forma basada en la carga de archivos en HTML" especifica que un archivo se puede cargar en el servidor mediante una petición POST de un formulario HTML. Un nuevo tipo de atributo = "archivo" se añadió a la etiqueta de HTML para soportar la carga de archivos. Los datos de la carga de archivos de un POST no está codificada en URL (en el estándar application / x-www-form-urlencoded), pero utiliza un nuevo tipo MIME multipart / form-data.
+
+**Ejemplo**
+
+La siguiente forma HTML PUEDE ser usada para subir archivos:
+``` sh
+<html>
+<head><title>File Upload</title></head>
+<body>
+  <h2>Upload File</h2>
+  <form method="post" enctype="multipart/form-data" action="servlet/UploadServlet">
+    Who are you: <input type="text" name="username" /><br />
+    Choose the file to upload:
+    <input type="file" name="fileID" /><br />
+    <input type="submit" value="SEND" />
+  </form>
+</body>
+</html>
+upload
+```
+![](https://www.ntu.edu.sg/home/ehchua/programming/webprogramming/images/HTML_FileUploadForm.png)
+
+Cuando el navegador encuentra una etiqueta con el atributo de tipo "archivo" =, se muestra un cuadro de texto y un "... Examinar", para permitir al usuario elegir el archivo para ser cargado.
+
+Cuando el usuario hace clic en el botón de enviar, el navegador envía los datos del formulario y el contenido del archivo (s) seleccionado. El viejo tipo de codificación "application / x-www-form-urlencoded" es ineficiente para el envío de datos binarios y los caracteres no ASCII. Un nuevo tipo de medio "multipart / form-data" se utiliza en su lugar.
+
+Cada parte identifica el nombre de entrada en el formulario HTML original, y el tipo de contenido si se conoce los medios, o como application / octet-stream de otro modo.
+
+El nombre de archivo local original podría ser suministrado como parámetro "nombre de archivo", o en el "Content-Disposition: form-data" de cabecera.
+
+Un ejemplo del mensaje POST de carga de archivos es la siguiente:
+``` sh
+POST /bin/upload HTTP/1.1
+Host: test101
+Accept: image/gif, image/jpeg, */*
+Accept-Language: en-us
+Content-Type: multipart/form-data; boundary=---------------------------7d41b838504d8
+Accept-Encoding: gzip, deflate
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)
+Content-Length: 342
+Connection: Keep-Alive
+Cache-Control: no-cache
+
+-----------------------------7d41b838504d8 Content-Disposition: form-data; name="username" 
+Peter Lee
+-----------------------------7d41b838504d8 Content-Disposition: form-data; name="fileID"; filename="C:\temp.html" Content-Type: text/plain 
+<h1>Home page on main server</h1> 
+-----------------------------7d41b838504d8--
+```
+
+Servlet 3.0 provee soporte construido para el procesamiento de carga, "Uploading Files in Servlet 3.0"
+
+### Método de solicitud "CONNECT"
+
+La solicitud de conexión HTTP se utiliza para pedir a un proxy establecer una conexión con anteras de acogida y simplemente retransmitir el contenido, en lugar de intentar analizar o almacenar en caché el mensaje. Esto a menudo se utiliza para realizar una conexión a través de un proxy.
+
+(En construcción)
+
+### Otros Métodos de Petición
+
+PU: Pregunta al servidor para guardar datos
+
+DELETE: Pregunta al servidor para borrar información
+
+Para consideraciones de seguridad, PUT y DELETE no son soportadas por la mayoria de los servidores de producción.
+
+Métodos de extención (de igual manera errores de codigo y cabezeras) pueden ser definidos para extnder la funcionalidad del protocolo HTTP.
+
+(En construcción)
+
+### Contenido de Negociaión
+
+Como se menciona anteriormente, HTTP soporta la negociación de contenido entre el cliente y el servidor. Un cliente puede utilizar los encabezados de solicitudes adicionales (como Aceptar, Accept-Language, Accept-Charset, Accept-Encoding) para indicar al servidor que puede manejar o el contenido que se prefiere. Si el servidor posee varias versiones de un mismo documento en un formato diferente, devolverá el formato que el cliente prefiera. Este proceso se llama negociación de contenido.
+
+### Negociación Tipo de contenido
+
+El servidor utiliza un archivo de configuración MIME (llamado "conf \ mime.types") para asignar la extensión de archivo a un tipo de medio, de modo que pueda determinar el tipo de medio del archivo examinando su extensión de archivo. Por ejemplo, las extensiones de archivos "htm", "html" están asociados con el tipo de medio MIME "text / html", la extensión de archivo ".jpg", ".jpeg" están asociados con "image / jpeg". Cuando un archivo se devuelve al cliente, el servidor tiene que aguantar una cabecera de respuesta Content-Type para informar al cliente el tipo de soporte de los datos.
+
+Para la negociación de tipo de contenido, supongamos que las solicitudes de los clientes para un archivo llamado "logo" , sin especificar su tipo, y envía una cabecera "Accept: image / gif, image / jpeg, ...". Si el servidor tiene 2 formatos del "logo": "logo.gif" y "logo.jpg", y el archivo de configuración MIME tiene las siguientes entradas:
+``` sh
+image/gif        gif
+image/jpeg       jpeg jpg jpe
+```
+
+El servidor devolverá "logo.gif" al cliente, basado en la cabecera la cabezera accept del cliente , y la asignación de tipo MIME / archivo. El servidor incluirá un "Content-type: image / gif" en el encabezado de respuesta.
+
+Se muestra el siguiente mensaje:
+
+``` sh
+GET /logo HTTP/1.1
+Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg,
+  application/x-shockwave-flash, application/vnd.ms-excel, 
+  application/vnd.ms-powerpoint, application/msword, */*
+Accept-Language: en-us
+Accept-Encoding: gzip, deflate
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)
+Host: test101:8080
+Connection: Keep-Alive
+(blank line)
+```
+``` sh
+HTTP/1.1 200 OK
+Date: Sun, 29 Feb 2004 01:42:22 GMT
+Server: Apache/1.3.29 (Win32)
+Content-Location: logo.gif
+Vary: negotiate,accept
+TCN: choice
+Last-Modified: Wed, 21 Feb 1996 19:45:52 GMT
+ETag: "0-916-312b7670;404142de"
+Accept-Ranges: bytes
+Content-Length: 2326
+Keep-Alive: timeout=15, max=100
+Connection: Keep-Alive
+Content-Type: image/gif
+(blank line)
+(body omitted)
+```
+Sin embargo, el servidor tiene 3 archivos "logo.*", "logo.gif", "logo.html", "logo.jpg" y "Accept: /" es usado:
+``` sh
+GET /logo HTTP/1.1
+Accept: */*
+Accept-Language: en-us
+Accept-Encoding: gzip, deflate
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)
+Host: test101:8080
+Connection: Keep-Alive
+(blank line)
+```
+``` sh
+HTTP/1.1 200 OK
+Date: Sun, 29 Feb 2004 01:48:16 GMT
+Server: Apache/1.3.29 (Win32)
+Content-Location: logo.html
+Vary: negotiate,accept
+TCN: choice
+Last-Modified: Fri, 20 Feb 2004 04:31:17 GMT
+ETag: "0-10-40358d95;404144c1"
+Accept-Ranges: bytes
+Content-Length: 16
+Keep-Alive: timeout=15, max=100
+Connection: Keep-Alive
+Content-Type: text/html
+(blank line)
+(body omitted)
+```
+``` sh
+Accept: */*
+```
+Las siguientes directivas de configuración de apache son relevantes al tipo de contenido de negociación:
+
+* La diretiva TypeConfig puede ser usada para especificar la localización del mapeo del archivo MIME.
+``` sh
+TypeConfig conf/mime.types
+```
+
+* La directiva AddType puede ser usada para incluir Mapeos del tipo MIME adicionales al contenido del archivo.
+``` sh
+AddType mime-type extension1 [extension2]
+```
+* La directiva DefaultType da el tipo MIME de una extención de archivo desconocida(en el tipo-de-contenido de la cabezera de respuesta).
+``` sh
+DefaultType text/plain
+```
+
+### Lenguaje de Negociación y "Opciones de Multivista"
+
+Las directivas de opciones de multivista es una forma simple de implementar lenguajes de negociación. Por ejemplo:
+``` sh
+AddLanguage en .en
+<Directory "C:/_javabin/Apache1.3.29/htdocs">
+    Options Indexes MultiViews
+</Directory>
+```
+
+Suponiendo que el cliente solicita el archivo "index.html" y envia un "Accept-Lenguage: en-us", Si el servidor tiene "test.html", "test.html.en" and "test.html.cn" basados en las preferencias del cliente "test.html.en" sera regresado ("en" incluye "en-us")
+
+Un trazo del mensaje es el siguiente:
+``` sh
+GET /index.html HTTP/1.1
+Accept: */*
+Accept-Language: en-us
+Accept-Encoding: gzip, deflate
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)
+Host: test101:8080
+Connection: Keep-Alive
+(blank line)
+```
+``` sh
+HTTP/1.1 200 OK
+Date: Sun, 29 Feb 2004 02:08:29 GMT
+Server: Apache/1.3.29 (Win32)
+Content-Location: index.html.en
+Vary: negotiate
+TCN: choice
+Last-Modified: Sun, 29 Feb 2004 02:07:45 GMT
+ETag: "0-13-40414971;40414964"
+Accept-Ranges: bytes
+Content-Length: 19
+Keep-Alive: timeout=15, max=100
+Connection: Keep-Alive
+Content-Type: text/html
+Content-Language: en
+(blank line)
+(body omitted)
+```
+
+Se necesita la directiva AddLanguage para asociar un código de idioma con una extensión de archivo, similar a la asignación de tipo/archivo MIME.
+
+Tenga en cuenta que la directiva "Options All" no incluye la opción "MultiViews". Es decir, hay que girar de forma explícita en MultiViews.
+
+La directiva LanguagePriority puede ser usada para especificar la preferencia de idioma en caso de empate durante la negociación de contenido o si el cliente no expresa una preferencia. Por ejemplo:
+``` sh
+<IfModule mod_negotiation.c>
+   LanguagePriority en da nl et fr de el it ja kr no pl pt pt-br
+</IfModule>
+```
+
+### Conjunto de Caracteres de Negociación
+
+Un cliente puede utilizar la solicitud de cabecera Accept-Charset para negociar con el servidor el conjunto de caracteres que prefiere.
+``` sh
+Accept-Charset: charset-1, charset-2, ...
+```
+Los conjuntos de caracteres comúnmente encontrados incluyen: ISO-8859-1 (Latin-I), ISO-8859-2, ISO-8859-5, Big5 (chino tradicional), GB2312 (chino simplificado), UCS2 (2 bytes Unicode), UCS4 (4 bytes Unicode), UTF-8 (Unicode codificada), y etc.
+
+Del mismo modo, la directiva AddCharset se utiliza para asociar la extensión de archivo con el conjunto de caracteres. Por ejemplo:
+``` sh
+AddCharset ISO-8859-8   .iso8859-8
+AddCharset ISO-2022-JP  .jis
+AddCharset Big5         .Big5  .big5
+AddCharset WINDOWS-1251 .cp-1251
+AddCharset CP866        .cp866
+AddCharset ISO-8859-5   .iso-ru
+AddCharset KOI8-R       .koi8-r
+AddCharset UCS-2        .ucs2
+AddCharset UCS-4        .ucs4
+AddCharset UTF-8        .utf8
+```
+### Negociación de codificación
+Un cliente puede utilizar el encabezado Accept-Encoding para indicar al servidor el tipo de codificación que soporta. Los esquemas de codificación comunes son: "x-gzip (.gz, .tgz)" y "x-compress (.Z)".
+``` sh
+Accept-Encoding: Codificación-método-1, que codifica-método-2, ...
+```
+Del mismo modo, la directiva AddEncoding se utiliza para asociar la extensión de archivo con el esquema de una codificación. Por ejemplo:
+``` sh
+AddEncoding x-compress  .Z
+AddEncoding x-gzip      .gz .tgz
+```
+
+### Conexiones Persistentes (o Keep-alive)
+
+En HTTP / 1.0, el servidor cierra la conexión TCP después de entregar la respuesta por defecto (Connection: Close). Es decir, cada uno de servicios de conexión TCP es sólo una petición. Esta no es eficiente cuando muchas páginas HTML contienen hipervínculos (a través de la etiqueta href="URL">a) a otros recursos (como imágenes, scripts - ya sea local o desde un servidor remoto). Si se descarga una página que contiene 5 imágenes en línea, el navegador tiene que establecer una conexión TCP 6 veces en el mismo servidor.
+
+El cliente puede negociar con el servidor y pedir al servidor no cerrar la conexión después de la entrega de la respuesta, de modo que otra petición puede ser enviada a través de la misma conexión. Esto se conoce como conexión persistente (o keep-alive conexión). Las conexiones persistentes mejoran en gran medida la eficiencia de la red. Para HTTP / 1.0, la conexión por defecto es no persistente. Para solicitar conexión persistente, el cliente debe incluir un encabezado de solicitud "Conexión: keep-alive" en el mensaje de petición de negociar con el servidor.
+
+Para HTTP / 1.1, la conexión por defecto es persistente. El cliente no tiene que enviar la cabecera "Conexión: keep-alive" . En su lugar, el cliente puede desear enviar la cabecera "Connection: Close" para pedir al servidor para cerrar la conexión después de la entrega de la respuesta.
+
+La conexión persistente es extremadamente útil para páginas web con muchas imágenes pequeñas en línea y otros datos asociados, ya que todos estos pueden ser descargadas a través de la misma conexión. Los beneficios para la conexión persistente son:
+
+* Tiempo de CPU y ahorro de recursos en la apertura y cierre de conexión TCP en el cliente, proxy, puertas de enlace, y el servidor de origen.
+* La Solicitud puede ser "pipeline". Es decir, un cliente puede hacer varias solicitudes sin esperar a que cada respuesta, con el fin de utilizar la red de manera más eficiente.
+* Una respuesta más rápida ya que no hay tiempo necesario para realizar la conexión del protocolo de enlace de apertura TCP.
+
+En servidores HTTP Apache, varias directivas de configuración están relacionados con las conexiones persistentes:
+
+La directiva KeepAlive decide si admite conexiones persistentes. Esto toma el valor de encendido o apagado.
+``` sh
+KeepAlive On|Off
+```
+
+La directiva MaxKeepAliveRequests establece el número máximo de solicitudes que se pueden enviar a través de una conexión persistente. Se puede establecer en 0 para permitir que un número ilimitado de solicitudes. Se recomienda establecer en un número alto para un mejor rendimiento y eficiencia de la red.
+``` sh
+MaxKeepAliveRequests 200
+```
+La directiva KeepAliveTimeOut establece tiempo de espera para un conexión peristente en espera de la siguiente solicitud.
+``` sh
+KeepAliveTimeout 10
+```
+
+### Rango de descarga
+``` sh
+Accept-Ranges: bytes
+Transfer-Encoding: chunked
+```
+(En construcción)
+
+### Control de cache
+
+El cliente puede enviar un encabezado de solicitud "Cache-Control: no cache" para indicar al proxy que consiga una copia fresca del servidor original, aun cuando hay una copia en la cache local, Desafortunadamente el servidor HTTP/1.0 no entiende esta cabecera, pero usa un viejo encabezado de solicitud "Pragma: no-cache" Usted puede incluir varias cabeceras en su petición.
+``` sh
+Pragma: no-cache
+Cache-Control: no-cache
+```
+
+(Más, En construcción)
+
+### REFERENCIAS Y RECURSOS
+
+* W3C HTTP specifications at http://www.w3.org/standards/techs/http.
+* RFC 2616 "Hypertext Transfer Protocol HTTP/1.1", 1999 @ http://www.ietf.org/rfc/rfc2616.txt.
+* RFC 1945 "Hypertext Transfer Protocol HTTP/1.0", 1996 @ http://www.ietf.org/rfc/rfc1945.txt.
+* STD 2: "Assigned numbers", 1994.
+* STD 5: "Internet Protocol (IP)", 1981.
+* STD 6: "User Datagram Protocol (UDP)", 1980.
+* STD 7: "Transmission Control Protocol (TCP)", 1983.
+* RFC 2396: "Uniform Resource Identifiers (URI): Generic Syntax", 1998.
+* RFC 2045: "Multipurpose Internet Mail Extension (MIME) Part 1: Format of Internet Message Bodies", 1996.
+* RFC 1867: "Form-based File upload in HTML", 1995, (obsoleted by RFC2854).
+* RFC 2854: "The text/html media type", 2000.
+* Mutlipart Servlet for file upload @ www.servlets.com
