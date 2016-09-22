@@ -795,17 +795,27 @@ La siguiente es una muestra en forma HTML, que se produce por la siguiente secue
 
 Una forma contiene campos. Los tipos de campos incluyen:
 * Text Box: producido por <input type="text">.
+
 * Password Box: producido por <input type="password">.
+
 * Radio Button: producido por <input type="radio">.
+
 * Checkbox: producido por <input type="checkbox">.
+
 * Selection: producido por <select> and <option>.
+
 * Text Area: producido por <textarea>.
+
 * Submit Button: producido por <input type="submit">.
+
 * Reset Button: producido por <input type="reset">.
+
 * Hidden Field: producido por <input type="hidden">.
+
 * Button: producido por <input type="button">.
 
 Cada campo tiene un nombre y puede tomar un valor especifico. Una vez que el cliente rellena los campos y pulsa el botón de enviar, el navegador recoge cada nombre y valor de los campos, los empaca en pares tipo "nombre = valor", y concatena todos los campos utilizando "&" como separador de campo. Esto se conoce como una cadena de consulta. La cadena de consulta se enviará al servidor como parte de la solicitud.
+
 ``` sh
 name1=value1&name2=value2&name3=value3&... 
 ```
