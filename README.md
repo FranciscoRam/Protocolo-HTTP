@@ -759,7 +759,7 @@ X-Forwarded-For: 155.69.185.59, 155.69.5.234
 
 En muchas aplicaciones de Internet, tales como e-commerce y motores de búsqueda, se requieren los clientes para presentar información adicional al servidor (por ejemplo, el nombre, la dirección, las palabras clave de búsqueda). En base de los datos presentados, el servidor toma una acción apropiada y produce una respuesta personalizada.
 
-Los clientes suelen presentarse con una forma (producido utilizando la etiqueta HTML <form>). Una vez que se llenan los datos solicitados y pulsa el botón de enviar, el navegador empaca los datos del formulario y las presenta al servidor, usando una petición GET o una solicitud POST.
+Los clientes suelen presentarse con una forma (producido utilizando la etiqueta HTML `<form>`). Una vez que se llenan los datos solicitados y pulsa el botón de enviar, el navegador empaca los datos del formulario y las presenta al servidor, usando una petición GET o una solicitud POST.
 La siguiente es una muestra en forma HTML, que se produce por la siguiente secuencia de comandos HTML:
 ``` sh
 <html>
@@ -796,23 +796,23 @@ La siguiente es una muestra en forma HTML, que se produce por la siguiente secue
 Una forma contiene campos. Los tipos de campos incluyen:
 * Text Box: producido por `<input type="text">`.
 
-* Password Box: producido por <input type="password">.
+* Password Box: producido por `<input type="password">`.
 
-* Radio Button: producido por <input type="radio">.
+* Radio Button: producido por `<input type="radio">`.
 
-* Checkbox: producido por <input type="checkbox">.
+* Checkbox: producido por `<input type="checkbox">`.
 
-* Selection: producido por < select > and <option>.
+* Selection: producido por `<select>` and `<option>`.
 
-* Text Area: producido por <textarea>.
+* Text Area: producido por `<textarea>`.
 
-* Submit Button: producido por <input type="submit">.
+* Submit Button: producido por `<input type="submit">`.
 
-* Reset Button: producido por <input type="reset">.
+* Reset Button: producido por `<input type="reset">`.
 
-* Hidden Field: producido por <input type="hidden">.
+* Hidden Field: producido por `<input type="hidden">`.
 
-* Button: producido por <input type="button">.
+* Button: producido por `<input type="button">`.
 
 Cada campo tiene un nombre y puede tomar un valor especifico. Una vez que el cliente rellena los campos y pulsa el botón de enviar, el navegador recoge cada nombre y valor de los campos, los empaca en pares tipo "nombre = valor", y concatena todos los campos utilizando "&" como separador de campo. Esto se conoce como una cadena de consulta. La cadena de consulta se enviará al servidor como parte de la solicitud.
 
@@ -823,7 +823,7 @@ Los caracteres especiales no están permitidos dentro de la cadena de consulta. 
 ``` sh
 name=Peter+Lee&address=%23123+Happy+Ave&Language=C%2B%2B
 ```
-La cadena de consulta se puede enviar al servidor por medio del método de solicitud HTTP GET o POST, que se especifica en la etiqueta <form>'s atributo "método".
+La cadena de consulta se puede enviar al servidor por medio del método de solicitud HTTP GET o POST, que se especifica en la etiqueta `<form>`'s atributo "método".
 ``` sh
 <form method="get|post" action="url">
 ```
