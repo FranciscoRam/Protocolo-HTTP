@@ -794,7 +794,7 @@ La siguiente es una muestra en forma HTML, que se produce por la siguiente secue
 ![](https://www.ntu.edu.sg/home/ehchua/programming/webprogramming/images/HTML_SampleForm.png)
 
 Una forma contiene campos. Los tipos de campos incluyen:
-* Text Box: producido por <input type="text">.
+* Text Box: producido por `<input type="text">`.
 
 * Password Box: producido por <input type="password">.
 
@@ -802,7 +802,7 @@ Una forma contiene campos. Los tipos de campos incluyen:
 
 * Checkbox: producido por <input type="checkbox">.
 
-* Selection: producido por <select> and <option>.
+* Selection: producido por < select > and <option>.
 
 * Text Area: producido por <textarea>.
 
