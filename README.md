@@ -843,7 +843,7 @@ El método POST elimina estos inconvenientes. Si se utiliza el método de solici
 **Ejemplo**
 
 La siguiente forma HTML es usada para reunir el usuario y contraseña de un menu login.
-``` sh
+``` html
 <html>
 <head><title>Login</title></head>
 <body>
